@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(500)
+  orgInfo    Json?    @db.Json
+  status     Boolean  @default(true)
+  softDelete Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  Role       Role[]
+  User       User[]
+}
+
+model Role {
+  id             Int           @id @default(autoincrement())
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  organizationId Int?
+  name           String        @db.VarChar(500)
+  status         Boolean       @default(true)
+  softDelete     Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  User           User[]
+}
+
+model User {
+  id             Int           @id @default(autoincrement())
+  Organization   Organization? @relation(fields: [organizationId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  organizationId Int?
+  Role           Role?         @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  roleId         Int?
+  firstName      String        @db.VarChar(100)
+  middleName     String?       @db.VarChar(100)
+  lastName       String        @db.VarChar(100)
+  email          String        @unique @db.VarChar(500)
+  password       String        @db.VarChar(1000)
+  phone          String?       @db.VarChar(100)
+  userInfo       Json?         @db.Json
+  isSuperAdmin   Boolean       @default(false)
+  isAdmin        Boolean       @default(false)
+  isSubAdmin     Boolean       @default(false)
+  status         Boolean       @default(true)
+  softDelete     Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+}
