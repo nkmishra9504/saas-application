@@ -8,9 +8,9 @@ const router = express.Router();
 // Authentication Routes
 router.post('/register-organization', RegisterOrganization);
 router.post('/create-user', [verify_token] , CreateUser);
-router.post('/login', LoginUser);
+router.post('/create-user', [verify_token] , CreateUser);
+router.post('/update-user',  [verify_token],UpdateUser);
 router.post('/verify-session', [verify_token] ,verify_session);
-router.post('/update',  [verify_token],UpdateUser);
 
 //Permission component routes
 router.post('/add-permission-component',[verify_token] ,AddPermissionComponent);
