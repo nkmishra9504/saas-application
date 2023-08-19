@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Authentication Routes
 router.post('/register-organization', RegisterOrganization);
-router.post('/create-user', CreateUser);
+router.post('/create-user', [verify_token] , CreateUser);
 router.post('/login', LoginUser);
 router.post('/verify-session', [verify_token] ,verify_session);
 router.post('/update',  [verify_token],UpdateUser);

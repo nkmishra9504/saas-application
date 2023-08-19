@@ -123,9 +123,51 @@ export const verify_session = async(req: Request, res: Response) => {
     }
 }
 
-export const CreateUser = (req: Request, res: Response) => {
+export const CreateUser = async(req: Request, res: Response) => {
     const reqData: User = {...req.body}
-    res.json(reqData)
+    const validate = schema.userSchema.validate({
+        firstName: reqData.firstName,
+        lastName: reqData.lastName,
+        email: reqData.email,
+        password: reqData.password,
+    });
+    try {
+        if(validate.error) {
+            res.status(406).json(validate.error.details[0].message);
+            return
+        }
+        else {
+            const checkEmail = await prisma.user.findMany({
+                where: {
+                    email: reqData.email
+                }
+            });
+            if(checkEmail.length != 0) {
+                return res.status(406).json("Email already exists");
+            }
+            else {
+                let auth = req.headers["authorization"];
+                let user = await verify(auth ? auth : "");
+                if(user instanceof Object) {
+                    const organizationId = user.user[0].organizationId ? user.user[0].organizationId : 0;
+                    const hashPassword = await bcrypt.hash(reqData.password, 10);
+                    await prisma.user.create({
+                        data: {
+                            organizationId,
+                            firstName: reqData.firstName,
+                            lastName: reqData.lastName,
+                            email: reqData.email,
+                            password: hashPassword
+                        }
+                    });
+                    return res.status(200).json("user registered");
+                }
+            }
+        }
+    }
+    catch(error) {
+        console.log(error);
+    }
 }
 
 export const UpdateUser = (req: Request, res: Response) => {

@@ -15,9 +15,8 @@ export const verify_token = async(req: Request, res: Response, next: NextFunctio
             }
             else{
                 if(verified instanceof Object){
-                    res.json(verified.user);
+                    next();
                 }
-                next();
             }
         }
     }
