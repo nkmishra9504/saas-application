@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const veryfy = async(payload: string) => {
+export const verify = async(payload: string) => {
     try {
         if (payload != '') {
             let token = payload.split(' ')[1];

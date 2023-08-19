@@ -30,6 +30,7 @@ model Role {
   softDelete     Boolean       @default(false)
   createdAt      DateTime      @default(now())
   User           User[]
+  Permissions    Permissions[]
 }
 
 model User {
@@ -51,4 +52,25 @@ model User {
   status         Boolean       @default(true)
   softDelete     Boolean       @default(false)
   createdAt      DateTime      @default(now())
+}
+
+model PermissionComponent {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(100)
+  status      Boolean       @default(true)
+  softDelete  Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  Permissions Permissions[]
+}
+
+model Permissions {
+  id                    Int                  @id @default(autoincrement())
+  Role                  Role?                @relation(fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  roleId                Int?
+  PermissionComponent   PermissionComponent? @relation(fields: [permissionComponentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  permissionComponentId Int?
+  view                  Boolean              @default(false)
+  add                   Boolean              @default(false)
+  update                Boolean              @default(false)
+  remove                Boolean              @default(false)
 }

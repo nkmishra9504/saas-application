@@ -1,9 +1,11 @@
 import express, {Request, Response} from 'express';
 import Joi from 'joi';
-import { schema } from '../APISchema/AuthenticationSchema';
+import { schema } from '../APISchema/ValidationSchema';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import JWT from 'jsonwebtoken';
+import { verify } from '../helpers/Utils';
+import { User } from '../types';
 
 const prisma= new PrismaClient();
 const secret_key = 'my secret key';
@@ -99,6 +101,31 @@ export const LoginUser = async(req: Request, res: Response) => {
     catch(error){
         console.log(error);
     }
+}
+
+export const verify_session = async(req: Request, res: Response) => {
+    try{
+        const auth = req.headers["authorization"];
+        if(auth){
+            let verified = await verify(auth)
+            if(!verified){
+                return res.status(406).json("Authentication failed")
+            }
+            else{
+                if(verified instanceof Object){
+                    return res.status(200).json(verified.user)
+                }
+            }
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+export const CreateUser = (req: Request, res: Response) => {
+    const reqData: User = {...req.body}
+    res.json(reqData)
 }
 
 export const UpdateUser = (req: Request, res: Response) => {

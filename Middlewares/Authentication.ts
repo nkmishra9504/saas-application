@@ -1,20 +1,21 @@
 import { Request, Response, NextFunction } from "express";
-import { veryfy } from "../helpers/Utils";
+import { verify } from "../helpers/Utils";
 
 export const verify_token = async(req: Request, res: Response, next: NextFunction)=> {
     try{
         const auth = req.headers["authorization"];
         if(!auth){
             res.status(406).json("token not found")
+            return false
         }
         else{
-            let verify = await veryfy(auth)
-            if(!verify){
+            let verified = await verify(auth)
+            if(!verified){
                 return res.status(406).json("Authorization failed");
             }
             else{
-                if(verify instanceof Object){
-                    res.json(verify.user);
+                if(verified instanceof Object){
+                    res.json(verified.user);
                 }
                 next();
             }

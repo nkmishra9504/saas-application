@@ -36,6 +36,7 @@ export const schema = {
             .min(10)
             .max(10)
     }),
+
     LoginSchema: Joi.object({
         email: Joi.string()
             .email()
@@ -43,6 +44,25 @@ export const schema = {
         password: Joi.string()
             .min(5)
             .required()
+    }),
+
+    PermissionComponentSchema: Joi.object({
+        name: Joi.string()
+            .alphanum()
+            .uppercase()
+            .min(3)
+            .required()
+    }),
+
+    PermissionsSchema: Joi.object({
+        roleId: Joi.number()
+        .required(),
+        permissionComponentId: Joi.number()
+            .required(),
+        view: Joi.boolean(),
+        add: Joi.boolean(),
+        update: Joi.boolean(),
+        remove: Joi.boolean()
     })
 }
 
