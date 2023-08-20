@@ -195,3 +195,8 @@ export const UpdateUser = async (req: Request, res: Response) => {
         }
     }
 }
+
+export const AllUsers = async(req: Request, res: Response) => {
+    const allUsers = await prisma.user.findMany({});
+    res.status(200).json(allUsers);
+}
